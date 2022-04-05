@@ -1,0 +1,89 @@
+//// https://dbdiagram.io/d
+
+TABLE state {
+	id INTEGER [pk, increment]
+	code VARCHAR [NOT NULL, UNIQUE]
+	name VARCHAR [NOT NULL]
+}
+
+
+TABLE city {
+	id INTEGER [pk, increment]
+	name VARCHAR [NOT NULL, UNIQUE]
+	state_id INTEGER
+}
+Ref: city.state_id > state.id
+
+
+TABLE teacher {
+	id INTEGER [pk, increment]
+	email VARCHAR [NOT NULL, UNIQUE]
+	last_name VARCHAR
+	first_name VARCHAR [NOT NULL]
+	birthday DATE
+	password VARCHAR
+}
+
+
+
+TABLE classroom {
+	id INTEGER [pk, increment]
+	teacher_id INTEGER [NOT NULL]
+	first_day DATE
+	last_day DATE
+}
+Ref: classroom.teacher_id > teacher.id
+
+
+
+TABLE student {
+	id INTEGER [pk, increment]
+	email VARCHAR [NOT NULL, UNIQUE]
+	last_name VARCHAR
+	first_name VARCHAR [NOT NULL]
+	birthday DATE
+	password VARCHAR
+	city_id INTEGER
+}
+Ref: student.city_id > city.id
+
+
+TABLE homework {
+	id INTEGER [pk, increment]
+	classroom_id INTEGER
+	assigned_on DATE [NOT NULL]
+	due_by DATE [NOT NULL]
+	total_points INTEGER [NOT NULL]
+}
+Ref: homework.classroom_id > classroom.id
+
+
+TABLE student_in_classroom {
+	id INTEGER [pk, increment]
+	student_id INTEGER
+	classroom_id INTEGER
+	Indexes {
+	  (student_id, classroom_id) [name: 'student_in_classroom']
+	  id [unique]
+	}
+}
+Ref: student_in_classroom.student_id > student.id
+Ref: student_in_classroom.classroom_id > classroom.id
+
+
+
+TABLE homework_grade {
+	id INTEGER [pk, increment]
+	homework_id INTEGER [NOT NULL]
+	student_id INTEGER [NOT NULL]
+	completed_on DATE
+	points_earned INTEGER [NOT NULL]
+  Indexes {
+    (homework_id, student_id) [name: 'student_completed_homework']
+    id [unique]
+  }
+}
+Ref: homework_grade.homework_id > homework.id
+Ref: homework_grade.student_id > student.id
+
+
